@@ -52,15 +52,15 @@ fun WorldSkillsMedicAppNavigation() {
                         inclusive = true
                     }
                 }
-            }, skipOnClick = {
-
             })
         }
         composable(SignInDestination) {
             val viewModel: SignInViewModel = getViewModel()
             val state by viewModel.viewState.collectAsStateWithLifecycle()
 
-            SignIn(state = state, onEvent = viewModel::onEvent)
+            SignIn(state = state, onEvent = viewModel::onEvent, onClickConfirm = {
+                navController.navigate(ConfirmEmailCodeDestination)
+            })
         }
         composable(ConfirmEmailCodeDestination){
             val viewModel: SignInViewModel = getViewModel()

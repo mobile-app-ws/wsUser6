@@ -18,8 +18,12 @@ class SignInViewModel(
     fun onEvent(event: SignInEvents) {
         when (event) {
             is SignInEvents.OnEmailChange -> onEmailChange(event.email)
-            SignInEvents.SendCode -> TODO()
-            SignInEvents.SendEmail -> TODO()
+            SignInEvents.SendCode -> {
+
+            }
+            SignInEvents.SendEmail -> {
+
+            }
             is SignInEvents.OnCodeChange -> onCodeChange(event.code)
         }
     }
