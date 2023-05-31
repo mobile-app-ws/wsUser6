@@ -1,10 +1,11 @@
-package com.example.worldskillsapp.presentation
+package com.example.worldskillsapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.example.worldskillsapp.presentation.view.NavGraphs
 import com.example.worldskillsapp.presentation.view.SplashScreen
 import com.example.worldskillsapp.presentation.view.StartScreen
+import com.example.worldskillsapp.presentation.view.destinations.SignInDestination
 import com.example.worldskillsapp.presentation.view.destinations.SplashScreenDestination
 import com.example.worldskillsapp.presentation.view.destinations.StartScreenDestination
 import com.example.worldskillsapp.presentation.viewModels.SplashScreenViewModel
@@ -21,12 +22,14 @@ fun WorldSkillsMedicAppNavigation() {
     DestinationsNavHost(navGraph = NavGraphs.root, navController = navController) {
         composable(SplashScreenDestination) {
             val viewModel: SplashScreenViewModel = getViewModel()
-            val startScreenViewModel: StartScreenViewModel = getViewModel()
-            startScreenViewModel.setOnBoardValue(false)
             SplashScreen(navigateOnLoadSuccess = {
                 viewModel.checkOnBoardInfo(
                     isTrue = {
-
+                        navController.navigate(SignInDestination) {
+                            popUpTo(SplashScreenDestination) {
+                                inclusive = true
+                            }
+                        }
                     },
                     isFalse = {
                         navController.navigate(StartScreenDestination) {
@@ -42,6 +45,9 @@ fun WorldSkillsMedicAppNavigation() {
             val viewModel: StartScreenViewModel = getViewModel()
             viewModel.setOnBoardValue(true)
             StartScreen()
+        }
+        composable(SignInDestination){
+
         }
     }
 }
