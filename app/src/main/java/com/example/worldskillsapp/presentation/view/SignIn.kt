@@ -9,23 +9,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.example.worldskillsapp.presentation.events.SignInEvents
+import com.example.worldskillsapp.presentation.state.SignInState
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
 @Composable
-fun SignIn(){
+fun SignIn(
+    state: SignInState,
+    onEvent: (SignInEvents) -> Unit
+) {
     SignInContent()
 }
 
 @Composable
-fun SignInContent(){
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+fun SignInContent() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("Sign in", fontSize = 24.sp, color = Color.Green)
     }
 }
 
 @Preview
 @Composable
-fun SignInPreview(){
-    SignIn()
+fun SignInPreview() {
+    SignIn(state = SignInState(), onEvent = {
+
+    })
 }

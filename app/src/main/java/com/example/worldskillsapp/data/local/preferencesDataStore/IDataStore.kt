@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 * Назначение: интерфейс для класса DataStore
 */
 interface IDataStore {
-    suspend fun onBoardInfoIsViewable(value: Boolean)
+    suspend fun setOnBoardValue(value: Boolean)
     suspend fun getInfoAboutOnBoard(): Flow<Boolean>
 }

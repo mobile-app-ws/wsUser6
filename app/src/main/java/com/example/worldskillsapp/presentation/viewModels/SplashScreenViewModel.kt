@@ -13,8 +13,11 @@ class SplashScreenViewModel(
     fun checkOnBoardInfo(isTrue: () -> Unit, isFalse: () -> Unit) {
         viewModelScope.launch {
             dataStore.getInfoAboutOnBoard().first().let { onBoardInfoIsViewable ->
-                if (onBoardInfoIsViewable) isTrue()
-                else isFalse()
+                if (onBoardInfoIsViewable) isFalse()//isTrue()
+                else {
+                    dataStore.setOnBoardValue(true)
+                    isFalse()
+                }
             }
         }
     }

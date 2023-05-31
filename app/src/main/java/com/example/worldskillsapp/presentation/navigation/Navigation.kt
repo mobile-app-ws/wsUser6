@@ -1,13 +1,20 @@
 package com.example.worldskillsapp.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.example.worldskillsapp.presentation.state.SignInState
+import com.example.worldskillsapp.presentation.view.ConfirmEmailCode
 import com.example.worldskillsapp.presentation.view.NavGraphs
+import com.example.worldskillsapp.presentation.view.OnBoardScreen
+import com.example.worldskillsapp.presentation.view.SignIn
 import com.example.worldskillsapp.presentation.view.SplashScreen
-import com.example.worldskillsapp.presentation.view.StartScreen
+import com.example.worldskillsapp.presentation.view.destinations.ConfirmEmailCodeDestination
+import com.example.worldskillsapp.presentation.view.destinations.OnBoardScreenDestination
 import com.example.worldskillsapp.presentation.view.destinations.SignInDestination
 import com.example.worldskillsapp.presentation.view.destinations.SplashScreenDestination
-import com.example.worldskillsapp.presentation.view.destinations.StartScreenDestination
+import com.example.worldskillsapp.presentation.viewModels.SignInViewModel
 import com.example.worldskillsapp.presentation.viewModels.SplashScreenViewModel
 import com.example.worldskillsapp.presentation.viewModels.StartScreenViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -22,8 +29,6 @@ fun WorldSkillsMedicAppNavigation() {
     DestinationsNavHost(navGraph = NavGraphs.root, navController = navController) {
         composable(SplashScreenDestination) {
             val viewModel: SplashScreenViewModel = getViewModel()
-            val startScreenViewModel: StartScreenViewModel = getViewModel()
-            startScreenViewModel.setOnBoardValue(false)
             SplashScreen(navigateOnLoadSuccess = {
                 viewModel.checkOnBoardInfo(isTrue = {
                     navController.navigate(SignInDestination) {
@@ -32,7 +37,7 @@ fun WorldSkillsMedicAppNavigation() {
                         }
                     }
                 }, isFalse = {
-                    navController.navigate(StartScreenDestination) {
+                    navController.navigate(OnBoardScreenDestination) {
                         popUpTo(SplashScreenDestination) {
                             inclusive = true
                         }
@@ -40,19 +45,27 @@ fun WorldSkillsMedicAppNavigation() {
                 })
             })
         }
-        composable(StartScreenDestination) {
-            val viewModel: StartScreenViewModel = getViewModel()
-            viewModel.setOnBoardValue(true)
-            StartScreen(confirmOnClick = {
+        composable(OnBoardScreenDestination) {
+            OnBoardScreen(confirmOnClick = {
                 navController.navigate(SignInDestination) {
-                    popUpTo(StartScreenDestination) {
+                    popUpTo(OnBoardScreenDestination) {
                         inclusive = true
                     }
                 }
+            }, skipOnClick = {
+
             })
         }
         composable(SignInDestination) {
+            val viewModel: SignInViewModel = getViewModel()
+            val state by viewModel.viewState.collectAsStateWithLifecycle()
 
+            SignIn(state = state, onEvent = viewModel::onEvent)
+        }
+        composable(ConfirmEmailCodeDestination){
+            val viewModel: SignInViewModel = getViewModel()
+            val state by viewModel.viewState.collectAsStateWithLifecycle()
+            ConfirmEmailCode(popBackStack = { navController.popBackStack() }, state = state, onEvent = viewModel::onEvent)
         }
     }
 }

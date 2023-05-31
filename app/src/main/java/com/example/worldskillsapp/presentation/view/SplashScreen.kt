@@ -12,7 +12,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.ImagePainter
 import com.example.worldskillsapp.R
-import com.example.worldskillsapp.presentation.view.destinations.StartScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.navigate

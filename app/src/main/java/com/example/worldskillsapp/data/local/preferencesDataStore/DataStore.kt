@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 */
 class DataStore(context: Context): IDataStore {
     private val dataStore = context.dataStore
-    override suspend fun onBoardInfoIsViewable(value: Boolean) {
+    override suspend fun setOnBoardValue(value: Boolean) {
         dataStore.updateData { settings ->
             settings.copy(onBoardInfo = value)
         }

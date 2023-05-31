@@ -10,7 +10,7 @@ class StartScreenViewModel(
 ): ViewModel() {
     fun setOnBoardValue(value: Boolean) {
         viewModelScope.launch {
-            dataStore.onBoardInfoIsViewable(value)
+            dataStore.setOnBoardValue(value)
         }
     }
 }
