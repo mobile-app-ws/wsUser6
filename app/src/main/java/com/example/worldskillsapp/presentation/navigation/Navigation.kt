@@ -22,31 +22,36 @@ fun WorldSkillsMedicAppNavigation() {
     DestinationsNavHost(navGraph = NavGraphs.root, navController = navController) {
         composable(SplashScreenDestination) {
             val viewModel: SplashScreenViewModel = getViewModel()
+            val startScreenViewModel: StartScreenViewModel = getViewModel()
+            startScreenViewModel.setOnBoardValue(false)
             SplashScreen(navigateOnLoadSuccess = {
-                viewModel.checkOnBoardInfo(
-                    isTrue = {
-                        navController.navigate(SignInDestination) {
-                            popUpTo(SplashScreenDestination) {
-                                inclusive = true
-                            }
-                        }
-                    },
-                    isFalse = {
-                        navController.navigate(StartScreenDestination) {
-                            popUpTo(SplashScreenDestination) {
-                                inclusive = true
-                            }
+                viewModel.checkOnBoardInfo(isTrue = {
+                    navController.navigate(SignInDestination) {
+                        popUpTo(SplashScreenDestination) {
+                            inclusive = true
                         }
                     }
-                )
+                }, isFalse = {
+                    navController.navigate(StartScreenDestination) {
+                        popUpTo(SplashScreenDestination) {
+                            inclusive = true
+                        }
+                    }
+                })
             })
         }
         composable(StartScreenDestination) {
             val viewModel: StartScreenViewModel = getViewModel()
             viewModel.setOnBoardValue(true)
-            StartScreen()
+            StartScreen(confirmOnClick = {
+                navController.navigate(SignInDestination) {
+                    popUpTo(StartScreenDestination) {
+                        inclusive = true
+                    }
+                }
+            })
         }
-        composable(SignInDestination){
+        composable(SignInDestination) {
 
         }
     }

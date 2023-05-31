@@ -2,13 +2,8 @@
 
 package com.example.worldskillsapp.presentation.view
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,7 +46,7 @@ import kotlinx.coroutines.launch
 @Destination
 @Composable
 fun StartScreen(
-
+    confirmOnClick: () -> Unit
 ) {
     val selectedPage = remember { mutableStateOf(0) }
     val pagerState = rememberPagerState()
@@ -79,9 +68,7 @@ fun StartScreen(
                     pagerState.scrollToPage(pagerState.currentPage.inc())
                 }
             },
-            stopOnClick = {
-
-            }
+            confirmOnClick = confirmOnClick
         )
     }
 }
@@ -94,13 +81,13 @@ fun StartScreenContent(
     numberOfPages: Int,
     pagerState: PagerState,
     skipOnClick: () -> Unit,
-    stopOnClick: () -> Unit
+    confirmOnClick: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         onIndexChange(index)
     }
     Box(Modifier.fillMaxSize()) {
-        RowTopContent(page = page, skipOnClick = skipOnClick, stopOnClick = stopOnClick)
+        RowTopContent(page = page, skipOnClick = skipOnClick, confirmOnClick = confirmOnClick)
         TitleDescription(
             modifier = Modifier.align(Alignment.Center),
             title = page.title,
@@ -120,7 +107,7 @@ fun StartScreenContent(
 fun RowTopContent(
     page: ScreenPagerModel,
     skipOnClick: () -> Unit,
-    stopOnClick: () -> Unit,
+    confirmOnClick: () -> Unit,
 ) {
     Box(Modifier.fillMaxWidth()) {
         when (page) {
@@ -157,7 +144,7 @@ fun RowTopContent(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(),
-                            onClick = stopOnClick
+                            onClick = confirmOnClick
                         ), text = "Завершить", color = SkipTextButtonColor
                 )
             }
@@ -242,7 +229,7 @@ fun ContentImage(
 fun StartScreenPreview() {
     WorldSkillsAppTheme {
         Surface {
-            StartScreen()
+            StartScreen(confirmOnClick = {})
         }
     }
 }
