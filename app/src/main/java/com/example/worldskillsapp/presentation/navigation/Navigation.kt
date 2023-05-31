@@ -11,6 +11,7 @@ import com.example.worldskillsapp.presentation.view.OnBoardScreen
 import com.example.worldskillsapp.presentation.view.SignIn
 import com.example.worldskillsapp.presentation.view.SplashScreen
 import com.example.worldskillsapp.presentation.view.destinations.ConfirmEmailCodeDestination
+import com.example.worldskillsapp.presentation.view.destinations.EnterPasswordDestination
 import com.example.worldskillsapp.presentation.view.destinations.OnBoardScreenDestination
 import com.example.worldskillsapp.presentation.view.destinations.SignInDestination
 import com.example.worldskillsapp.presentation.view.destinations.SplashScreenDestination
@@ -62,10 +63,20 @@ fun WorldSkillsMedicAppNavigation() {
                 navController.navigate(ConfirmEmailCodeDestination)
             })
         }
-        composable(ConfirmEmailCodeDestination){
+        composable(ConfirmEmailCodeDestination) {
             val viewModel: SignInViewModel = getViewModel()
             val state by viewModel.viewState.collectAsStateWithLifecycle()
-            ConfirmEmailCode(popBackStack = { navController.popBackStack() }, state = state, onEvent = viewModel::onEvent)
+            ConfirmEmailCode(
+                popBackStack = { navController.popBackStack() },
+                state = state,
+                onEvent = viewModel::onEvent,
+                onSuccessCallback = {
+                    navController.navigate(EnterPasswordDestination) {
+                        popUpTo(SignInDestination) {
+                            inclusive = true
+                        }
+                    }
+                })
         }
     }
 }

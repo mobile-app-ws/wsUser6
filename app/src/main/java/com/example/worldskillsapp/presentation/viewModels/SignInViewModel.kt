@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.worldskillsapp.presentation.events.SignInEvents
 import com.example.worldskillsapp.presentation.state.SignInState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,16 +16,43 @@ class SignInViewModel(
     private val _viewState = MutableStateFlow(SignInState())
     val viewState = _viewState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            while (viewState.value.timer > 0) {
+                _viewState.update { state ->
+                    state.copy(timer = viewState.value.timer - 1)
+                }
+                delay(1000)
+            }
+        }
+    }
+
     fun onEvent(event: SignInEvents) {
         when (event) {
             is SignInEvents.OnEmailChange -> onEmailChange(event.email)
-            SignInEvents.SendCode -> {
-
+            is SignInEvents.OnCodeChange -> onCodeChange(event.code)
+            is SignInEvents.SendCode -> {
+                viewModelScope.launch {
+                    _viewState.update { state -> state.copy(isLoading = true) }
+                    delay(2000)
+                    _viewState.update { state -> state.copy(isLoading = false) }
+                    event.onSuccessCallback()
+                }
             }
             SignInEvents.SendEmail -> {
 
             }
-            is SignInEvents.OnCodeChange -> onCodeChange(event.code)
+            SignInEvents.SendCodeAgain -> {
+                _viewState.update { state -> state.copy(timer = 60) }
+                viewModelScope.launch {
+                    while (viewState.value.timer > 0) {
+                        _viewState.update { state ->
+                            state.copy(timer = viewState.value.timer - 1)
+                        }
+                        delay(1000)
+                    }
+                }
+            }
         }
     }
 

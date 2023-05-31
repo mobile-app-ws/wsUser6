@@ -63,17 +63,19 @@ import kotlinx.coroutines.delay
 fun ConfirmEmailCode(
     popBackStack: () -> Unit,
     state: SignInState,
-    onEvent: (SignInEvents) -> Unit
+    onEvent: (SignInEvents) -> Unit,
+    onSuccessCallback: () -> Unit
 ) {
     ConfirmEmailCodeContent(
         popBackStack = popBackStack,
-        timer = 60,
+        timer = state.timer,
         code = state.code,
         onCodeChange = { onEvent(SignInEvents.OnCodeChange(it)) },
         sendCode = { code ->
-
+            onEvent(SignInEvents.SendCode(code, onSuccessCallback = onSuccessCallback))
         },
-        loading = false
+        loading = state.isLoading,
+        sendCodeAgain = { onEvent(SignInEvents.SendCodeAgain) }
     )
 }
 
@@ -84,7 +86,8 @@ fun ConfirmEmailCodeContent(
     code: String,
     onCodeChange: (String) -> Unit,
     sendCode: (String) -> Unit,
-    loading: Boolean
+    loading: Boolean,
+    sendCodeAgain: () -> Unit
 ) {
     Box(Modifier.fillMaxSize()) {
         PopBackStackButton {
@@ -107,16 +110,18 @@ fun ConfirmEmailCodeContent(
                 sendCode = sendCode,
                 loading = loading
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
-           /* CustomWorldSkillsButton(text = "Отправить код повторно", modifier = Modifier
-                .fillMaxWidth()
-                .padding(64.dp, 0.dp), onClick = {
+            CustomButton(
+                title = "Отправить код повторно", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(64.dp, 0.dp), onClick = sendCodeAgain, enabled = timer == 0
+            )
 
-            }, locked = timer == 0)*/
             Spacer(modifier = Modifier.height(16.dp))
 
             TimerText(text = "Отправить код повторно можно")
-            TimerText(text = "будет через $timer секунд")
+            TimerText(text = "будет через ${timer} секунд")
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -160,7 +165,7 @@ fun CodeRowTextField(
     code: String,
     onCodeChange: (String) -> Unit,
     sendCode: (String) -> Unit,
-    loading: Boolean
+    loading: Boolean,
 ) {
     val focus = LocalFocusManager.current
     BasicTextField(
@@ -236,7 +241,10 @@ fun ConfirmEmailCodePreview() {
 
                 },
                 onEvent = {
-                    
+
+                },
+                onSuccessCallback = {
+
                 }
             )
         }

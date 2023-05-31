@@ -1,6 +1,5 @@
 package com.example.worldskillsapp.presentation.view
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -174,7 +173,7 @@ fun TitleAndDescription(
                     modifier = Modifier
                         .padding(2.dp, 0.dp)
                         .size(12.dp),
-                    painter = painterResource(id = if (it == index) R.drawable.selected_page else R.drawable.unselected_page),
+                    painter = painterResource(id = if (it == index) R.drawable.selected_circle else R.drawable.unselected_circle),
                     contentDescription = null
                 )
             }
